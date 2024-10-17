@@ -1,0 +1,12 @@
+modules = ["python-3.12"]
+run = "python assistant.py"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "python assistant.py"]
+
+[[ports]]
+localPort = 5050
+externalPort = 80
