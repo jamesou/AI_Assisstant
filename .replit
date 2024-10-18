@@ -1,11 +1,11 @@
 modules = ["python-3.12"]
-run = "python assistant.py"
+run = "uvicorn assistant:app --reload"
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "python assistant.py"]
+run = ["sh", "-c", "uvicorn assistant:app --reload"]
 
 [[ports]]
 localPort = 5050
