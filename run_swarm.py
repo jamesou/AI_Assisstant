@@ -1,44 +1,13 @@
 from dotenv import load_dotenv
 from openai import OpenAI
 from swarm import Swarm
-from agents import triage_agent
+from agents import router_agent
 import json
 
 ollama_client = OpenAI(
     base_url="http://localhost:11434/v1",        
     api_key="ollama"            
 )
-
-def process_and_print_streaming_response(response):
-    content = ""
-    last_sender = ""
-
-    for chunk in response:
-        if "sender" in chunk:
-            last_sender = chunk["sender"]
-
-        if "content" in chunk and chunk["content"] is not None:
-            if not content and last_sender:
-                print(f"\033[94m{last_sender}:\033[0m", end=" ", flush=True)
-                last_sender = ""
-            print(chunk["content"], end="", flush=True)
-            content += chunk["content"]
-
-        if "tool_calls" in chunk and chunk["tool_calls"] is not None:
-            for tool_call in chunk["tool_calls"]:
-                f = tool_call["function"]
-                name = f["name"]
-                if not name:
-                    continue
-                print(f"\033[94m{last_sender}: \033[95m{name}\033[0m()")
-
-        if "delim" in chunk and chunk["delim"] == "end" and content:
-            print()  # End of response message
-            content = ""
-
-        if "response" in chunk:
-            return chunk["response"]
-
 
 def pretty_print_messages(messages) -> None:
     for message in messages:
@@ -63,10 +32,10 @@ def pretty_print_messages(messages) -> None:
             print(f"\033[95m{name}\033[0m({arg_str[1:-1]})")
 
 def run_demo_loop(
-    starting_agent, context_variables=None, stream=False, debug=False
+    starting_agent, context_variables=None, stream=False, debug=True
 ) -> None:
     client = Swarm(client=ollama_client)
-    print("Starting Ollama Swarm CLI 🐝")
+    print("Starting Ollama Swarm CLI")
 
     messages = []
     agent = starting_agent
@@ -83,13 +52,10 @@ def run_demo_loop(
             debug=debug,
         )
 
-        if stream:
-            response = process_and_print_streaming_response(response)
-        else:
-            pretty_print_messages(response.messages)
+        pretty_print_messages(response.messages)
 
         messages.extend(response.messages)
         agent = response.agent
 
 if __name__ == "__main__":
-    run_demo_loop(triage_agent)
+    run_demo_loop(router_agent)

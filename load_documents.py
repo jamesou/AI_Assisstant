@@ -106,7 +106,7 @@ def create_vector_store(documents, embedding_model, collection_name="my_collecti
     return vectorstore
 
 def main():
-    # Define your document sources (PDFs, URLs)
+    # Define document sources (PDFs, URLs)
     pdf_paths = ['pdfs/Nestech Onboarding Manual July 2024_signed.pdf']
     urls = ['https://nestech.co.nz/', 'https://blog.langchain.dev/announcing-langchain-v0-3/']
     
