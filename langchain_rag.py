@@ -7,6 +7,7 @@ from langchain_qdrant import QdrantVectorStore
 from langchain.chains import RetrievalQA
 # import cohere
 from langchain.llms import Cohere
+ 
 
 # Load environment variables from .env file
 load_dotenv()
@@ -14,6 +15,7 @@ load_dotenv()
 # Set the Hugging Face API key from the environment variable
 os.environ['huggingfaceid'] = os.getenv('hf_token')
 cohere_token = os.getenv('cohere_token')
+anthropic_token= os.getenv('anthropic_token')
 
 #Set up the LLM for text generation
 def setup_llm():
@@ -33,7 +35,6 @@ def setup_llm():
     # llm = HuggingFaceEndpoint(repo_id=repo_id, max_length=8192, temperature=0.7, token=os.environ['huggingfaceid'])
 
     llm = Cohere(model="command", cohere_api_key=cohere_token,max_tokens=2048, temperature=0.7)
-
     return llm
 
 #Set up RetrievalQA chain
